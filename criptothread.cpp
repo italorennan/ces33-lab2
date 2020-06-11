@@ -37,13 +37,13 @@ pthread_mutex_t line;                                        // Linha a ser calc
 pthread_mutex_t inputMutex, outputMutex, opMutex1, opMutex2; // Protecao das operacoes
 
 
-void createMatrix(double** matrix, int matrixSize){
-   cout << "createMatrix Start";
-   matrix = new double*[matrixSize];
+void createMatrix(double*** matrix, int matrixSize){
+   cout << "createMatrix Start" << endl;
+   *matrix =  new double*[matrixSize];
    for(int i = 0; i < matrixSize; i++){
-      matrix[i] = new double[matrixSize];
+      (*matrix)[i] = new double[matrixSize];
    }
-   cout << "createMatrix";
+   cout << "createMatrix" << endl;
 }
 
 void cofactorLineCol(double** matrix, int matrixSize, int line, int col, double** cofactorMatrix){
@@ -68,7 +68,7 @@ double determinant(double** matrix, int matrixSize){
 
    double matrixDeterminant = 0;
    double** cofactorJ;
-   createMatrix(cofactorJ,matrixSize-1);
+   createMatrix(&cofactorJ,matrixSize-1);
 
    if(matrixSize == 1){
       return matrix[0][0];
@@ -87,7 +87,7 @@ double determinant(double** matrix, int matrixSize){
 
 void calculateCofactorMatrix(double** matrix, int matrixSize, double** cofactorMatrix){
    double** cofactorIJ;
-   createMatrix(cofactorIJ, matrixSize);
+   createMatrix(&cofactorIJ, matrixSize);
    for(int i = 0; i < matrixSize; i++){
       for(int j = 0; j < matrixSize; j++){
          cofactorLineCol(matrix, matrixSize,i, j, cofactorIJ);
@@ -105,7 +105,7 @@ void transposeMatrix(double** matrix, int matrixSize, double** transposedMatrix)
 
 void calculateAdjointMatrix(double** matrix, int matrixSize, double** adjointMatrix){
    double** cofactorMatrix;
-   createMatrix(cofactorMatrix,matrixSize);
+   createMatrix(&cofactorMatrix,matrixSize);
    calculateCofactorMatrix(matrix, matrixSize, cofactorMatrix);
    transposeMatrix(cofactorMatrix, matrixSize, adjointMatrix);
 
@@ -118,7 +118,7 @@ unsigned int calculateInverseMatrix(double** matrix, int matrixSize, double** in
       cout << "Erro: Nao existe matriz inversa" << endl;
       return 1;
    }
-   createMatrix(adjointMatrix, matrixSize);
+   createMatrix(&adjointMatrix, matrixSize);
    calculateAdjointMatrix(matrix, matrixSize, adjointMatrix);
    for(int i = 0; i < matrixSize; i++){
       for(int j = 0; j < matrixSize; j++){
@@ -129,11 +129,11 @@ unsigned int calculateInverseMatrix(double** matrix, int matrixSize, double** in
 }
 
 void createCodeMatrix(string key, double** cod){
+   cout << "Entering createCodeMatrix" << endl;
    for (int i = 0; i < SIZE; i++)
       for (int j = 0; j < SIZE; j++)
-         cod[i][j] = int(key[i * SIZE + j]);
-   
-   return;
+         cod[i][j] = int(key[i*SIZE + j]);
+   cout << "out of createCodeMatrix" << endl;
 }
 
 void createDecodeMatrix(double** cod, double** decod){
@@ -147,13 +147,14 @@ void createDecodeMatrix(double** cod, double** decod){
 int setupCodeDecodeMatrix(){
 
    // Alocacao e definicao das matrizes de criptografia
-   cout << "setupCodeDecodeMatrix";
+   cout << "setupCodeDecodeMatrix" << endl;
    SIZE = sqrt(key.size());
-   createMatrix(cod,SIZE);
-   createMatrix(decod,SIZE);
+   createMatrix(&cod,SIZE);
+   createMatrix(&decod,SIZE);
 
    
    // Geracao da matriz codificadora
+   cout << "Pre createCodeMatrix" << endl;
    createCodeMatrix(key, cod);
 
    // Usando tabelas auxiliares pq n sei fazer direto com os ponteiros
@@ -170,10 +171,10 @@ int checkKeySize(string key){
    cout << rootKey << "lalala" << endl;
    cout << "lelele" << endl;
    if(rootKey*rootKey == keySize){
-      cout << "rootKey*rootKey == keySize";
+      cout << "rootKey*rootKey == keySize" << endl;
       return 1;
    }
-   cout << "else";
+   cout << "else" << endl;
    return 0;
 }
 
@@ -407,7 +408,7 @@ void deleteMatrix(double** matrix,int matrixSize){
 }
 
 void setupMutex(){
-   cout << "Setup Mutex";
+   cout << "Setup Mutex" << endl;
    if(
        pthread_mutex_init(&line, NULL) != 0 ||
        pthread_mutex_init(&inputMutex, NULL) != 0 ||
@@ -432,9 +433,10 @@ int main()
       cout << "Chave de criptografia invalida." << endl;
       return 1;
    }
-   cout << "Out of IF";
+   cout << "Out of IF" << endl;
    ///Criando as matrizes necessárias
    setupCodeDecodeMatrix();
+   cout << "out of codedecode" << endl;
    ///Setup do MUtex
    setupMutex();
    ///Executando a operação
