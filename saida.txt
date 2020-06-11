@@ -1,1 +1,2 @@
-Chave de criptografia invalida.
+16
+4

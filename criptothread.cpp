@@ -4,7 +4,6 @@
 #include <cstdlib>
 #include <cmath>
 #include <pthread.h>
-#include <chrono>
 
 using namespace std;
 
@@ -39,15 +38,16 @@ pthread_mutex_t inputMutex, outputMutex, opMutex1, opMutex2; // Protecao das ope
 
 
 void createMatrix(double** matrix, int matrixSize){
+   cout << "createMatrix Start";
    matrix = new double*[matrixSize];
    for(int i = 0; i < matrixSize; i++){
       matrix[i] = new double[matrixSize];
    }
+   cout << "createMatrix";
 }
 
 void cofactorLineCol(double** matrix, int matrixSize, int line, int col, double** cofactorMatrix){
    int cofactorI, cofactorJ;
-   createMatrix(cofactorMatrix, matrixSize-1);
    cofactorI = 0;
    for(int i = 0; i < matrixSize; i++){
       cofactorJ = 0;
@@ -147,10 +147,12 @@ void createDecodeMatrix(double** cod, double** decod){
 int setupCodeDecodeMatrix(){
 
    // Alocacao e definicao das matrizes de criptografia
+   cout << "setupCodeDecodeMatrix";
    SIZE = sqrt(key.size());
    createMatrix(cod,SIZE);
    createMatrix(decod,SIZE);
 
+   
    // Geracao da matriz codificadora
    createCodeMatrix(key, cod);
 
@@ -161,14 +163,18 @@ int setupCodeDecodeMatrix(){
    return 0;
 }
 
-bool checkKeySize(string key){
+int checkKeySize(string key){
    int keySize = key.size();
    cout << keySize << endl;
-   int rootKey = sqrt(keySize);
-   cout << rootKey << endl;
-   if (abs(rootKey*rootKey - keySize) < 0.0000001)
-      return true;
-   return false;
+   int rootKey = (int) sqrt(keySize);
+   cout << rootKey << "lalala" << endl;
+   cout << "lelele" << endl;
+   if(rootKey*rootKey == keySize){
+      cout << "rootKey*rootKey == keySize";
+      return 1;
+   }
+   cout << "else";
+   return 0;
 }
 
 // Funcao de multiplicacao de uma linha entre duas matrizes
@@ -360,16 +366,12 @@ void* readDecode(void* arg){
 // Funcao de decodificacao das entradas
 void* opDecode(void* arg){
 
-   
-
 }
 
 // Funcao de escrita das saidas decodificadas
 void* writeDecode(void* arg){
 
 }
-
-
 
 // Funcao centralizadora no caso de decodificar entradas
 void decode(){
@@ -397,7 +399,15 @@ void executeOperation(string operation){
       cout << "Operacao nao especificada" << endl;
 }
 
+void deleteMatrix(double** matrix,int matrixSize){
+   for(int i = 0; i < matrixSize; i++){
+      delete[] matrix[i];
+   }
+   delete[] matrix;
+}
+
 void setupMutex(){
+   cout << "Setup Mutex";
    if(
        pthread_mutex_init(&line, NULL) != 0 ||
        pthread_mutex_init(&inputMutex, NULL) != 0 ||
@@ -417,11 +427,12 @@ int main()
 {
    getline(cin, key);
    getline(cin, operation);
-   ///Checando se a key é valida
+   ///Checando se a key é validaW
    if (!checkKeySize(key)){
       cout << "Chave de criptografia invalida." << endl;
       return 1;
    }
+   cout << "Out of IF";
    ///Criando as matrizes necessárias
    setupCodeDecodeMatrix();
    ///Setup do MUtex
@@ -430,12 +441,8 @@ int main()
    executeOperation(operation);
    
    // Liberar espaco de memoria das matrizes
-   for (int i = 0; i < SIZE; i++){
-      delete[] cod[i];
-      delete[] decod[i];
-   }
-   delete[] cod;
-   delete[] decod;
+   deleteMatrix(cod, SIZE);
+   deleteMatrix(decod, SIZE);
 
    // Destruir os mutexes
    pthread_mutex_destroy(&line);
