@@ -11,6 +11,7 @@ using namespace std;
 // Informacoes das matrizes de criptografia
 int SIZE = 0; // Dimensões da matriz
 int step = 0; // Variavel para linha atual
+string mode;
 string operation;
 string key;     // Chave de criptografia
 double** cod;   // Matriz codificadora
@@ -502,7 +503,7 @@ void decode(){
       pthread_join(mainThreads[i], NULL);
 }
 
-void executeOperation(string operation){
+void executeThreadedOperation(string operation){
    if(operation == "c")
       encode();
    else if(operation == "d")
@@ -540,7 +541,7 @@ int main()
 {
    getline(cin, key);
    getline(cin, operation);
-   
+   getline(cin, mode);
    // Checando se a key é valida
    if (!checkKeySize()){
       cout << "Chave de criptografia invalida." << endl;
@@ -553,9 +554,9 @@ int main()
    // Inicializacao dos mutexes
    setupMutex();
    
-   // Executando a operacao
-   executeOperation(operation);
-   
+   // Executando a operacao (Threaded)
+   executeThreadedOperation(operation);
+
    // Liberar espaco de memoria das matrizes
    deleteMatrix(cod, SIZE);
    deleteMatrix(decod, SIZE);
@@ -564,4 +565,4 @@ int main()
    destroyMutex();
 
    return 0;
-}
+};
