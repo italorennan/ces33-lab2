@@ -180,17 +180,17 @@ void* mult(void* arg){
    thisData = (struct ThreadData *)arg;
 
    // Determinar linha calculada: regiao critica
-   // pthread_mutex_lock(&line);
-   // int core = step++;
-   // if (step == SIZE)
-   //    step = 0;
-   // pthread_mutex_unlock(&line);
+   pthread_mutex_lock(&line);
+   int core = step++;
+   if (step == SIZE)
+      step = 0;
+   pthread_mutex_unlock(&line);
 
    // Calcular cada elemento da linha
    for (int i = 0; i < inputColumns; i++)
       for (int j = 0; j < SIZE; j++) 
-         (thisData->C)[thisData->core][i] += 
-            (thisData->A)[thisData->core][j] * 
+         (thisData->C)[core][i] += 
+            (thisData->A)[core][j] * 
             (thisData->B)[j][i];
 }
 
@@ -273,7 +273,7 @@ void* opCode(void* arg){
          pthread_t opThreads[SIZE];
 
          for (int i = 0; i < SIZE; i++){
-            td.core = i;
+            //td.core = i;
             pthread_create(&opThreads[i], NULL, 
                mult, (void *)&td);
          }
@@ -444,7 +444,7 @@ void* opDecode(void* arg){
             pthread_t opThreads[SIZE];
 
             for (int i = 0; i < SIZE; i++){
-               td.core = i;
+               //td.core = i;
                pthread_create(&opThreads[i], NULL, mult, (void *)&td);
             }
             // Esperar threads terminarem execucao

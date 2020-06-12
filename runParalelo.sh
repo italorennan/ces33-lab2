@@ -1,0 +1,12 @@
+./paralelo < ./entradas/entrada_C_4_1000.txt > ./saidas/Paralelo/Paralelo_C_4_1000.txt
+./paralelo < ./entradas/entrada_C_4_10000.txt > ./saidas/Paralelo/Paralelo_C_4_10000.txt
+./paralelo < ./entradas/entrada_C_100_1000.txt > ./saidas/Paralelo/Paralelo_C_100_1000.txt
+./paralelo < ./entradas/entrada_C_100_10000.txt > ./saidas/Paralelo/Paralelo_C_100_10000.txt
+./paralelo < ./entradas/entrada_C_4096_1000.txt > ./saidas/Paralelo/Paralelo_C_4096_1000.txt
+./paralelo < ./entradas/entrada_C_4096_10000.txt > ./saidas/Paralelo/Paralelo_C_4096_10000.txt
+./paralelo < ./entradas/entrada_D_4_1000.txt > ./saidas/Paralelo/Paralelo_D_4_1000.txt
+./paralelo < ./entradas/entrada_D_4_10000.txt > ./saidas/Paralelo/Paralelo_D_4_10000.txt
+./paralelo < ./entradas/entrada_D_100_1000.txt > ./saidas/Paralelo/Paralelo_D_100_1000.txt
+./paralelo < ./entradas/entrada_D_100_10000.txt > ./saidas/Paralelo/Paralelo_D_100_10000.txt
+./paralelo < ./entradas/entrada_D_4096_1000.txt > ./saidas/Paralelo/Paralelo_D_4096_1000.txt
+./paralelo < ./entradas/entrada_D_4096_10000.txt > ./saidas/Paralelo/Paralelo_D_4096_10000.txt

@@ -1,0 +1,12 @@
+./maxParalelo < ./entradas/entrada_C_4_1000.txt > ./saidas/MaxParalelo/MaxParalelo_C_4_1000.txt
+./maxParalelo < ./entradas/entrada_C_4_10000.txt > ./saidas/MaxParalelo/MaxParalelo_C_4_10000.txt
+./maxParalelo < ./entradas/entrada_C_100_1000.txt > ./saidas/MaxParalelo/MaxParalelo_C_100_1000.txt
+./maxParalelo < ./entradas/entrada_C_100_10000.txt > ./saidas/MaxParalelo/MaxParalelo_C_100_10000.txt
+./maxParalelo < ./entradas/entrada_C_4096_1000.txt > ./saidas/MaxParalelo/MaxParalelo_C_4096_1000.txt
+./maxParalelo < ./entradas/entrada_C_4096_10000.txt > ./saidas/MaxParalelo/MaxParalelo_C_4096_10000.txt
+./maxParalelo < ./entradas/entrada_D_4_1000.txt > ./saidas/MaxParalelo/MaxParalelo_D_4_1000.txt
+./maxParalelo < ./entradas/entrada_D_4_10000.txt > ./saidas/MaxParalelo/MaxParalelo_D_4_10000.txt
+./maxParalelo < ./entradas/entrada_D_100_1000.txt > ./saidas/MaxParalelo/MaxParalelo_D_100_1000.txt
+./maxParalelo < ./entradas/entrada_D_100_10000.txt > ./saidas/MaxParalelo/MaxParalelo_D_100_10000.txt
+./maxParalelo < ./entradas/entrada_D_4096_1000.txt > ./saidas/MaxParalelo/MaxParalelo_D_4096_1000.txt
+./maxParalelo < ./entradas/entrada_D_4096_10000.txt > ./saidas/MaxParalelo/MaxParalelo_D_4096_10000.txt

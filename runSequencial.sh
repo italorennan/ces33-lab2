@@ -1,0 +1,12 @@
+./sequencial < ./entradas/entrada_C_4_1000.txt > ./saidas/Sequencial/Sequencial_C_4_1000.txt
+./sequencial < ./entradas/entrada_C_4_10000.txt > ./saidas/Sequencial/Sequencial_C_4_10000.txt
+./sequencial < ./entradas/entrada_C_100_1000.txt > ./saidas/Sequencial/Sequencial_C_100_1000.txt
+./sequencial < ./entradas/entrada_C_100_10000.txt > ./saidas/Sequencial/Sequencial_C_100_10000.txt
+./sequencial < ./entradas/entrada_C_4096_1000.txt > ./saidas/Sequencial/Sequencial_C_4096_1000.txt
+./sequencial < ./entradas/entrada_C_4096_10000.txt > ./saidas/Sequencial/Sequencial_C_4096_10000.txt
+./sequencial < ./entradas/entrada_D_4_1000.txt > ./saidas/Sequencial/Sequencial_D_4_1000.txt
+./sequencial < ./entradas/entrada_D_4_10000.txt > ./saidas/Sequencial/Sequencial_D_4_10000.txt
+./sequencial < ./entradas/entrada_D_100_1000.txt > ./saidas/Sequencial/Sequencial_D_100_1000.txt
+./sequencial < ./entradas/entrada_D_100_10000.txt > ./saidas/Sequencial/Sequencial_D_100_10000.txt
+./sequencial < ./entradas/entrada_D_4096_1000.txt > ./saidas/Sequencial/Sequencial_D_4096_1000.txt
+./sequencial < ./entradas/entrada_D_4096_10000.txt > ./saidas/Sequencial/Sequencial_D_4096_10000.txt
