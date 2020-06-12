@@ -4,6 +4,7 @@
 #include <cstdlib>
 #include <cmath>
 #include <sstream>
+#include <chrono>
 
 using namespace std;
 
@@ -350,12 +351,17 @@ int main()
    // Criando as matrizes necessárias
    setupCodeDecodeMatrix();
    
+   auto init = chrono::steady_clock::now();
    // Executando a operacao (Threaded)
    executeUnthreadedOperation(operation);
+   auto end = chrono::steady_clock::now();
+   auto elapsed = chrono::duration_cast<chrono::microseconds>(end-init).count();
 
    // Liberar espaco de memoria das matrizes
    deleteMatrix(cod, SIZE);
    deleteMatrix(decod, SIZE);
+
+   cout << "Tempo gasto sequencial: " << elapsed << " us";
 
    return 0;
 };
