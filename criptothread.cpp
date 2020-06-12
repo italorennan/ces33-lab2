@@ -9,12 +9,12 @@
 using namespace std;
 
 // Informacoes das matrizes de criptografia
-int SIZE = 0; // Dimensões da matriz
-int step = 0; // Variavel para linha atual
-string operation;
-string key;     // Chave de criptografia
-double** cod;   // Matriz codificadora
-double** decod; // Matriz decodificadora
+int SIZE = 0;     // Dimensões da matriz
+int step = 0;     // Variavel para linha atual
+string operation; // Tipo de operacao executada
+string key;       // Chave de criptografia
+double** cod;     // Matriz codificadora
+double** decod;   // Matriz decodificadora
 
 // Informacoes do dado analisado
 double** input;
@@ -34,8 +34,9 @@ struct ThreadData{
 };
 
 // Mutexes
-pthread_mutex_t line;                                        // Linha a ser calculada
-pthread_mutex_t inputMutex, outputMutex, opMutex1, opMutex2; // Protecao das operacoes
+pthread_mutex_t line;  // Linha a ser calculada
+pthread_mutex_t inputMutex, outputMutex, 
+   opMutex1, opMutex2; // Protecao das operacoes
 
 void createMatrix(double*** matrix, int matrixSize){
    *matrix =  new double*[matrixSize];
@@ -163,7 +164,15 @@ int checkKeySize(){
    return 0;
 }
 
-// Funcao de multiplicacao de uma linha entre duas matrizes
+void deleteMatrix(double** matrix,int matrixSize){
+   for(int i = 0; i < matrixSize; i++){
+      delete[] matrix[i];
+   }
+   delete[] matrix;
+}
+
+// Funcao de multiplicacao de uma linha 
+// entre duas matrizes
 void* mult(void* arg){
    struct ThreadData *thisData;
    thisData = (struct ThreadData *)arg;
@@ -178,7 +187,9 @@ void* mult(void* arg){
    // Calcular cada elemento da linha
    for (int i = 0; i < inputColumns; i++)
       for (int j = 0; j < SIZE; j++) 
-         (thisData->C)[core][i] += (thisData->A)[core][j] * (thisData->B)[j][i];
+         (thisData->C)[core][i] += 
+            (thisData->A)[core][j] * 
+            (thisData->B)[j][i];
 }
 
 // Funcao de leitura das entradas para codificar
@@ -203,7 +214,8 @@ void *readCode(void *arg){
          if (length % SIZE != 0)
          {
             inputColumns++;
-            int remainder = SIZE * inputColumns - length;
+            int remainder = SIZE * inputColumns 
+               - length;
             for (int i = 0; i < remainder; i++)
                info[length + i] = char(1);
          }
@@ -216,7 +228,8 @@ void *readCode(void *arg){
          // Gerar matriz input correspondente
          for (int i = 0; i < SIZE; i++)
             for (int j = 0; j < inputColumns; j++)
-               input[i][j] = int(info[i * inputColumns + j]);
+               input[i][j] = 
+                  int(info[i * inputColumns + j]);
       }
 
       pthread_mutex_unlock(&opMutex1);
@@ -238,20 +251,19 @@ void* opCode(void* arg){
       // Codificar dado para output
       else
       {
-         // Alocar espaco de memoria para matriz output
+         // Alocar espaco de memoria para output
          outputColumns = inputColumns;
          output = new double*[SIZE];
          for (int i = 0; i < SIZE; i++)
             output[i] = new double[outputColumns];
 
-         // Setando os valores iniciais da matriz output em 0
+         // Setando os valores iniciais de output em 0
          for (int i = 0; i < SIZE; i++)
             for (int j = 0; j < outputColumns; j++)
                output[i][j] = 0;
 
-         // Criacao das threads para cada linha do resultado
+         // Criacao das threads para cada linha
          struct ThreadData td;
-         // Diferenciacao para codificar e decodificar
          td.A = cod;
          td.B = input;
          td.C = output;
@@ -259,16 +271,15 @@ void* opCode(void* arg){
          pthread_t opThreads[SIZE];
 
          for (int i = 0; i < SIZE; i++)
-            pthread_create(&opThreads[i], NULL, mult, (void *)&td);
+            pthread_create(&opThreads[i], NULL, 
+               mult, (void *)&td);
 
          // Esperar threads terminarem execucao
          for (int i = 0; i < SIZE; i++)
             pthread_join(opThreads[i], NULL);
 
          // Liberar espaco de memoria da matriz input
-         for (int i = 0; i < SIZE; i++)
-            delete[] input[i];
-         delete[] input;
+         deleteMatrix(input, SIZE);
       }
 
       pthread_mutex_unlock(&inputMutex);
@@ -306,9 +317,7 @@ void* writeCode(void* arg){
          }
 
          // Liberar espaco de memoria da matriz output
-         for (int i = 0; i < SIZE; i++)
-            delete[] output[i];
-         delete[] output;
+         deleteMatrix(output, SIZE);
       }
 
       pthread_mutex_unlock(&opMutex2);
@@ -438,9 +447,7 @@ void* opDecode(void* arg){
                 pthread_join(opThreads[i], NULL);
 
             // Liberar espaco de memoria da matriz input
-            for (int i = 0; i < SIZE; i++)
-                delete[] input[i];
-            delete[] input;
+            deleteMatrix(input, SIZE);
         }
 
         pthread_mutex_unlock(&inputMutex);
@@ -474,9 +481,7 @@ void* writeDecode(void* arg){
             cout << endl;
 
             // Liberar espaco de memoria da matriz output
-            for (int i = 0; i < SIZE; i++)
-                delete[] output[i];
-            delete[] output;
+            deleteMatrix(output, SIZE);
         }
 
         pthread_mutex_unlock(&opMutex2);
@@ -511,21 +516,19 @@ void executeThreadedOperation(string operation){
       cout << "Operacao nao especificada" << endl;
 }
 
-void deleteMatrix(double** matrix,int matrixSize){
-   for(int i = 0; i < matrixSize; i++){
-      delete[] matrix[i];
-   }
-   delete[] matrix;
-}
-
-void setupMutex(){
+int setupMutex(){
    if(
        pthread_mutex_init(&line, NULL) != 0 ||
        pthread_mutex_init(&inputMutex, NULL) != 0 ||
        pthread_mutex_init(&outputMutex, NULL) != 0 ||
        pthread_mutex_init(&opMutex1, NULL) != 0 ||
-       pthread_mutex_init(&opMutex2, NULL) != 0)
-      cout << "Inicializacao dos mutexes falhou!" << endl;
+       pthread_mutex_init(&opMutex2, NULL) != 0) {
+      cout << "Inicializacao dos mutexes falhou!" 
+         << endl;
+      return 1;
+   }
+
+   return 0;
 }
 
 void destroyMutex(){
@@ -540,6 +543,7 @@ int main()
 {
    getline(cin, key);
    getline(cin, operation);
+
    // Checando se a key é valida
    if (!checkKeySize()){
       cout << "Chave de criptografia invalida." << endl;
@@ -550,7 +554,7 @@ int main()
    setupCodeDecodeMatrix();
    
    // Inicializacao dos mutexes
-   setupMutex();
+   if (setupMutex()) return 2;
    
    // Executando a operacao (Threaded)
    executeThreadedOperation(operation);
