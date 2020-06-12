@@ -11,7 +11,6 @@ using namespace std;
 // Informacoes das matrizes de criptografia
 int SIZE = 0; // Dimensões da matriz
 int step = 0; // Variavel para linha atual
-string mode;
 string operation;
 string key;     // Chave de criptografia
 double** cod;   // Matriz codificadora
@@ -541,7 +540,6 @@ int main()
 {
    getline(cin, key);
    getline(cin, operation);
-   getline(cin, mode);
    // Checando se a key é valida
    if (!checkKeySize()){
       cout << "Chave de criptografia invalida." << endl;
