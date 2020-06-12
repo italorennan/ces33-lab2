@@ -4,7 +4,6 @@
 #include <cstdlib>
 #include <cmath>
 #include <sstream>
-#include <pthread.h>
 
 using namespace std;
 
@@ -21,22 +20,7 @@ double** decod; // Matriz decodificadora
 double** input;
 double** output;
 string info;
-int inputColumns = 0;
-int outputColumns = 0;
-bool finishRead = false;
-bool finishOp = false;
-bool finishWrite = false;
-
-// Matrizes da multiplicação: A * B = C
-struct ThreadData{
-   double** A;
-   double** B;
-   double** C;
-};
-
-// Mutexes
-pthread_mutex_t line;                                        // Linha a ser calculada
-pthread_mutex_t inputMutex, outputMutex, opMutex1, opMutex2; // Protecao das operacoes
+int columns = 0;
 
 void printMatrix(double** matrix, int lineNumber, int columnNumber){
    for(int i = 0; i < lineNumber; i++){
@@ -202,19 +186,19 @@ void unthreadedEncode(){
    while (true)
    {
       // Detectar proximo dado
-      cout << "#" << endl;
       getline(cin, info);
-      cout << info << endl;
       if (info == "$")
          return;
+      else
+         cout << "#" << endl;
 
       // Determinar largura da matriz input
       int length = info.size();
-      inputColumns = length / SIZE;
+      columns = length / SIZE;
       if (length % SIZE != 0)
       {
-         inputColumns++;
-         int remainder = SIZE * inputColumns - length;
+         columns++;
+         int remainder = SIZE * columns - length;
          for (int i = 0; i < remainder; i++)
             info[length + i] = char(1);
       }
@@ -222,19 +206,19 @@ void unthreadedEncode(){
       // Alocar espaco de memoria para matriz input
       input = new double* [SIZE];
       for (int i = 0; i < SIZE; i++)
-         input[i] = new double[inputColumns];
+         input[i] = new double[columns];
 
       // Gerar matriz input correspondente
       for (int i = 0; i < SIZE; i++)
-         for (int j = 0; j < inputColumns; j++)
-            input[i][j] = int(info[i * inputColumns + j]);
+         for (int j = 0; j < columns; j++)
+            input[i][j] = int(info[i * columns + j]);
 
       double** encodedMatrix = new double*[SIZE];
       for(int i = 0; i < SIZE; i++)
-         encodedMatrix[i] = new double[inputColumns];
+         encodedMatrix[i] = new double[columns];
 
-      matrixMultiplication(cod,input,encodedMatrix, SIZE, inputColumns, SIZE);
-      printMatrix(encodedMatrix,SIZE, inputColumns);
+      matrixMultiplication(cod, input, encodedMatrix, SIZE, columns, SIZE);
+      printMatrix(encodedMatrix, SIZE, columns);
    }
 
 }
@@ -252,7 +236,7 @@ void unthreadedDecode(){
       }
       // Determinar largura da matriz input
       getline(cin, info);
-      inputColumns = 0;
+      columns = 0;
       int i = 0;
       while (i < info.size()) {
          char c = info[i];  
@@ -264,13 +248,13 @@ void unthreadedDecode(){
                i++;
                c = info[i];
          }
-         inputColumns++;
+         columns++;
       }
       
       // Alocar espaco de memoria para matriz input
       input = new double* [SIZE];
       for (i = 0; i < SIZE; i++)
-         input[i] = new double[inputColumns];
+         input[i] = new double[columns];
 
       // Gerar matriz input correspondente
       string infoAux;
@@ -278,7 +262,7 @@ void unthreadedDecode(){
       for (int n = 0; n < SIZE; n++){
          if (n != 0) getline(cin, info);
          j = 0;
-         for (i = 0; i < inputColumns; i++) {
+         for (i = 0; i < columns; i++) {
                infoAux = "";
                int k = 0;
                char c = info[j];
@@ -297,11 +281,11 @@ void unthreadedDecode(){
       }
       double** decodedMatrix = new double*[SIZE];
       for(int i = 0; i < SIZE; i++){
-         decodedMatrix[i] = new double[inputColumns];
+         decodedMatrix[i] = new double[columns];
       }
-      matrixMultiplication(decod,input,decodedMatrix, SIZE, inputColumns, SIZE);
+      matrixMultiplication(decod, input, decodedMatrix, SIZE, columns, SIZE);
       for(int i = 0; i < SIZE; i++){
-         for(int j = 0; j < inputColumns; j++){
+         for(int j = 0; j < columns; j++){
             int ascii = round(decodedMatrix[i][j]);
             if(ascii != 1) cout << char(ascii);
          }
@@ -323,6 +307,7 @@ int main()
 {
    getline(cin, key);
    getline(cin, operation);
+
    // Checando se a key é valida
    if (!checkKeySize()){
       cout << "Chave de criptografia invalida." << endl;
